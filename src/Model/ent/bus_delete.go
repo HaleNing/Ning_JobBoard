@@ -9,25 +9,25 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/HaleNing/bustrack/src/Model/ent/book"
+	"github.com/HaleNing/bustrack/src/Model/ent/bus"
 	"github.com/HaleNing/bustrack/src/Model/ent/predicate"
 )
 
-// BookDelete is the builder for deleting a Book entity.
-type BookDelete struct {
+// BusDelete is the builder for deleting a Bus entity.
+type BusDelete struct {
 	config
 	hooks    []Hook
-	mutation *BookMutation
+	mutation *BusMutation
 }
 
-// Where appends a list predicates to the BookDelete builder.
-func (bd *BookDelete) Where(ps ...predicate.Book) *BookDelete {
+// Where appends a list predicates to the BusDelete builder.
+func (bd *BusDelete) Where(ps ...predicate.Bus) *BusDelete {
 	bd.mutation.Where(ps...)
 	return bd
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (bd *BookDelete) Exec(ctx context.Context) (int, error) {
+func (bd *BusDelete) Exec(ctx context.Context) (int, error) {
 	var (
 		err      error
 		affected int
@@ -36,7 +36,7 @@ func (bd *BookDelete) Exec(ctx context.Context) (int, error) {
 		affected, err = bd.sqlExec(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*BookMutation)
+			mutation, ok := m.(*BusMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
 			}
@@ -59,7 +59,7 @@ func (bd *BookDelete) Exec(ctx context.Context) (int, error) {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (bd *BookDelete) ExecX(ctx context.Context) int {
+func (bd *BusDelete) ExecX(ctx context.Context) int {
 	n, err := bd.Exec(ctx)
 	if err != nil {
 		panic(err)
@@ -67,13 +67,13 @@ func (bd *BookDelete) ExecX(ctx context.Context) int {
 	return n
 }
 
-func (bd *BookDelete) sqlExec(ctx context.Context) (int, error) {
+func (bd *BusDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := &sqlgraph.DeleteSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table: book.Table,
+			Table: bus.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: book.FieldID,
+				Type:   field.TypeInt64,
+				Column: bus.FieldID,
 			},
 		},
 	}
@@ -91,25 +91,25 @@ func (bd *BookDelete) sqlExec(ctx context.Context) (int, error) {
 	return affected, err
 }
 
-// BookDeleteOne is the builder for deleting a single Book entity.
-type BookDeleteOne struct {
-	bd *BookDelete
+// BusDeleteOne is the builder for deleting a single Bus entity.
+type BusDeleteOne struct {
+	bd *BusDelete
 }
 
 // Exec executes the deletion query.
-func (bdo *BookDeleteOne) Exec(ctx context.Context) error {
+func (bdo *BusDeleteOne) Exec(ctx context.Context) error {
 	n, err := bdo.bd.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{book.Label}
+		return &NotFoundError{bus.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (bdo *BookDeleteOne) ExecX(ctx context.Context) {
+func (bdo *BusDeleteOne) ExecX(ctx context.Context) {
 	bdo.bd.ExecX(ctx)
 }

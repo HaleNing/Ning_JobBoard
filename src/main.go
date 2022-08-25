@@ -34,8 +34,7 @@ func main() {
 	}
 	handler.BaseAPi(app)
 	handler.DriverApi(baseAPi)
-	handler.BusApi(baseAPi)
-	handler.BookApi(baseAPi, ctx)
+	handler.BusApi(baseAPi, ctx)
 	defer func(client *ent.Client) {
 		err := client.Close()
 		if err != nil {

@@ -8,34 +8,42 @@ import (
 )
 
 var (
-	// BooksColumns holds the columns for the "books" table.
-	BooksColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "book_name", Type: field.TypeString, Default: "default_book"},
-		{Name: "author", Type: field.TypeString},
+	// BusColumns holds the columns for the "bus" table.
+	BusColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "bus_name", Type: field.TypeString},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
+		{Name: "user_id", Type: field.TypeInt64},
+		{Name: "is_delete", Type: field.TypeInt8, Default: 1},
 	}
-	// BooksTable holds the schema information for the "books" table.
-	BooksTable = &schema.Table{
-		Name:       "books",
-		Columns:    BooksColumns,
-		PrimaryKey: []*schema.Column{BooksColumns[0]},
+	// BusTable holds the schema information for the "bus" table.
+	BusTable = &schema.Table{
+		Name:       "bus",
+		Columns:    BusColumns,
+		PrimaryKey: []*schema.Column{BusColumns[0]},
 	}
-	// UsersColumns holds the columns for the "users" table.
-	UsersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "age", Type: field.TypeInt},
-		{Name: "name", Type: field.TypeString, Default: "QA"},
+	// BusDriversColumns holds the columns for the "bus_drivers" table.
+	BusDriversColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "user_name", Type: field.TypeString, Size: 25},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
+		{Name: "is_delete", Type: field.TypeInt8, Default: 1},
+		{Name: "user_age", Type: field.TypeInt8},
+		{Name: "sex", Type: field.TypeBool},
+		{Name: "career_age", Type: field.TypeInt8},
 	}
-	// UsersTable holds the schema information for the "users" table.
-	UsersTable = &schema.Table{
-		Name:       "users",
-		Columns:    UsersColumns,
-		PrimaryKey: []*schema.Column{UsersColumns[0]},
+	// BusDriversTable holds the schema information for the "bus_drivers" table.
+	BusDriversTable = &schema.Table{
+		Name:       "bus_drivers",
+		Columns:    BusDriversColumns,
+		PrimaryKey: []*schema.Column{BusDriversColumns[0]},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		BooksTable,
-		UsersTable,
+		BusTable,
+		BusDriversTable,
 	}
 )
 

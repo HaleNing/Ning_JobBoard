@@ -9,28 +9,28 @@ import (
 	"github.com/HaleNing/bustrack/src/Model/ent"
 )
 
-// The BookFunc type is an adapter to allow the use of ordinary
-// function as Book mutator.
-type BookFunc func(context.Context, *ent.BookMutation) (ent.Value, error)
+// The BusFunc type is an adapter to allow the use of ordinary
+// function as Bus mutator.
+type BusFunc func(context.Context, *ent.BusMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f BookFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.BookMutation)
+func (f BusFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.BusMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BookMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BusMutation", m)
 	}
 	return f(ctx, mv)
 }
 
-// The UserFunc type is an adapter to allow the use of ordinary
-// function as User mutator.
-type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)
+// The Bus_driverFunc type is an adapter to allow the use of ordinary
+// function as Bus_driver mutator.
+type Bus_driverFunc func(context.Context, *ent.BusDriverMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f UserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.UserMutation)
+func (f Bus_driverFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.BusDriverMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BusDriverMutation", m)
 	}
 	return f(ctx, mv)
 }

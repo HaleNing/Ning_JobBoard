@@ -6,8 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Book is the predicate function for book builders.
-type Book func(*sql.Selector)
+// Bus is the predicate function for bus builders.
+type Bus func(*sql.Selector)
 
-// User is the predicate function for user builders.
-type User func(*sql.Selector)
+// Bus_driver is the predicate function for bus_driver builders.
+type Bus_driver func(*sql.Selector)

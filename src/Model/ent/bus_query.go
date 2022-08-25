@@ -10,70 +10,70 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/HaleNing/bustrack/src/Model/ent/book"
+	"github.com/HaleNing/bustrack/src/Model/ent/bus"
 	"github.com/HaleNing/bustrack/src/Model/ent/predicate"
 )
 
-// BookQuery is the builder for querying Book entities.
-type BookQuery struct {
+// BusQuery is the builder for querying Bus entities.
+type BusQuery struct {
 	config
 	limit      *int
 	offset     *int
 	unique     *bool
 	order      []OrderFunc
 	fields     []string
-	predicates []predicate.Book
+	predicates []predicate.Bus
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the BookQuery builder.
-func (bq *BookQuery) Where(ps ...predicate.Book) *BookQuery {
+// Where adds a new predicate for the BusQuery builder.
+func (bq *BusQuery) Where(ps ...predicate.Bus) *BusQuery {
 	bq.predicates = append(bq.predicates, ps...)
 	return bq
 }
 
 // Limit adds a limit step to the query.
-func (bq *BookQuery) Limit(limit int) *BookQuery {
+func (bq *BusQuery) Limit(limit int) *BusQuery {
 	bq.limit = &limit
 	return bq
 }
 
 // Offset adds an offset step to the query.
-func (bq *BookQuery) Offset(offset int) *BookQuery {
+func (bq *BusQuery) Offset(offset int) *BusQuery {
 	bq.offset = &offset
 	return bq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (bq *BookQuery) Unique(unique bool) *BookQuery {
+func (bq *BusQuery) Unique(unique bool) *BusQuery {
 	bq.unique = &unique
 	return bq
 }
 
 // Order adds an order step to the query.
-func (bq *BookQuery) Order(o ...OrderFunc) *BookQuery {
+func (bq *BusQuery) Order(o ...OrderFunc) *BusQuery {
 	bq.order = append(bq.order, o...)
 	return bq
 }
 
-// First returns the first Book entity from the query.
-// Returns a *NotFoundError when no Book was found.
-func (bq *BookQuery) First(ctx context.Context) (*Book, error) {
+// First returns the first Bus entity from the query.
+// Returns a *NotFoundError when no Bus was found.
+func (bq *BusQuery) First(ctx context.Context) (*Bus, error) {
 	nodes, err := bq.Limit(1).All(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{book.Label}
+		return nil, &NotFoundError{bus.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (bq *BookQuery) FirstX(ctx context.Context) *Book {
+func (bq *BusQuery) FirstX(ctx context.Context) *Bus {
 	node, err := bq.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -81,22 +81,22 @@ func (bq *BookQuery) FirstX(ctx context.Context) *Book {
 	return node
 }
 
-// FirstID returns the first Book ID from the query.
-// Returns a *NotFoundError when no Book ID was found.
-func (bq *BookQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+// FirstID returns the first Bus ID from the query.
+// Returns a *NotFoundError when no Bus ID was found.
+func (bq *BusQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = bq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{book.Label}
+		err = &NotFoundError{bus.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (bq *BookQuery) FirstIDX(ctx context.Context) int {
+func (bq *BusQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := bq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -104,10 +104,10 @@ func (bq *BookQuery) FirstIDX(ctx context.Context) int {
 	return id
 }
 
-// Only returns a single Book entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one Book entity is found.
-// Returns a *NotFoundError when no Book entities are found.
-func (bq *BookQuery) Only(ctx context.Context) (*Book, error) {
+// Only returns a single Bus entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one Bus entity is found.
+// Returns a *NotFoundError when no Bus entities are found.
+func (bq *BusQuery) Only(ctx context.Context) (*Bus, error) {
 	nodes, err := bq.Limit(2).All(ctx)
 	if err != nil {
 		return nil, err
@@ -116,14 +116,14 @@ func (bq *BookQuery) Only(ctx context.Context) (*Book, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{book.Label}
+		return nil, &NotFoundError{bus.Label}
 	default:
-		return nil, &NotSingularError{book.Label}
+		return nil, &NotSingularError{bus.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (bq *BookQuery) OnlyX(ctx context.Context) *Book {
+func (bq *BusQuery) OnlyX(ctx context.Context) *Bus {
 	node, err := bq.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -131,11 +131,11 @@ func (bq *BookQuery) OnlyX(ctx context.Context) *Book {
 	return node
 }
 
-// OnlyID is like Only, but returns the only Book ID in the query.
-// Returns a *NotSingularError when more than one Book ID is found.
+// OnlyID is like Only, but returns the only Bus ID in the query.
+// Returns a *NotSingularError when more than one Bus ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (bq *BookQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (bq *BusQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = bq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -143,15 +143,15 @@ func (bq *BookQuery) OnlyID(ctx context.Context) (id int, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{book.Label}
+		err = &NotFoundError{bus.Label}
 	default:
-		err = &NotSingularError{book.Label}
+		err = &NotSingularError{bus.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (bq *BookQuery) OnlyIDX(ctx context.Context) int {
+func (bq *BusQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := bq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -159,8 +159,8 @@ func (bq *BookQuery) OnlyIDX(ctx context.Context) int {
 	return id
 }
 
-// All executes the query and returns a list of Books.
-func (bq *BookQuery) All(ctx context.Context) ([]*Book, error) {
+// All executes the query and returns a list of BusSlice.
+func (bq *BusQuery) All(ctx context.Context) ([]*Bus, error) {
 	if err := bq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -168,7 +168,7 @@ func (bq *BookQuery) All(ctx context.Context) ([]*Book, error) {
 }
 
 // AllX is like All, but panics if an error occurs.
-func (bq *BookQuery) AllX(ctx context.Context) []*Book {
+func (bq *BusQuery) AllX(ctx context.Context) []*Bus {
 	nodes, err := bq.All(ctx)
 	if err != nil {
 		panic(err)
@@ -176,17 +176,17 @@ func (bq *BookQuery) AllX(ctx context.Context) []*Book {
 	return nodes
 }
 
-// IDs executes the query and returns a list of Book IDs.
-func (bq *BookQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
-	if err := bq.Select(book.FieldID).Scan(ctx, &ids); err != nil {
+// IDs executes the query and returns a list of Bus IDs.
+func (bq *BusQuery) IDs(ctx context.Context) ([]int64, error) {
+	var ids []int64
+	if err := bq.Select(bus.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (bq *BookQuery) IDsX(ctx context.Context) []int {
+func (bq *BusQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := bq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -195,7 +195,7 @@ func (bq *BookQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (bq *BookQuery) Count(ctx context.Context) (int, error) {
+func (bq *BusQuery) Count(ctx context.Context) (int, error) {
 	if err := bq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -203,7 +203,7 @@ func (bq *BookQuery) Count(ctx context.Context) (int, error) {
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (bq *BookQuery) CountX(ctx context.Context) int {
+func (bq *BusQuery) CountX(ctx context.Context) int {
 	count, err := bq.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -212,7 +212,7 @@ func (bq *BookQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (bq *BookQuery) Exist(ctx context.Context) (bool, error) {
+func (bq *BusQuery) Exist(ctx context.Context) (bool, error) {
 	if err := bq.prepareQuery(ctx); err != nil {
 		return false, err
 	}
@@ -220,7 +220,7 @@ func (bq *BookQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (bq *BookQuery) ExistX(ctx context.Context) bool {
+func (bq *BusQuery) ExistX(ctx context.Context) bool {
 	exist, err := bq.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -228,18 +228,18 @@ func (bq *BookQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the BookQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the BusQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (bq *BookQuery) Clone() *BookQuery {
+func (bq *BusQuery) Clone() *BusQuery {
 	if bq == nil {
 		return nil
 	}
-	return &BookQuery{
+	return &BusQuery{
 		config:     bq.config,
 		limit:      bq.limit,
 		offset:     bq.offset,
 		order:      append([]OrderFunc{}, bq.order...),
-		predicates: append([]predicate.Book{}, bq.predicates...),
+		predicates: append([]predicate.Bus{}, bq.predicates...),
 		// clone intermediate query.
 		sql:    bq.sql.Clone(),
 		path:   bq.path,
@@ -253,17 +253,17 @@ func (bq *BookQuery) Clone() *BookQuery {
 // Example:
 //
 //	var v []struct {
-//		BookName string `json:"book_name,omitempty"`
+//		BusName string `json:"bus_name,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.Book.Query().
-//		GroupBy(book.FieldBookName).
+//	client.Bus.Query().
+//		GroupBy(bus.FieldBusName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
-func (bq *BookQuery) GroupBy(field string, fields ...string) *BookGroupBy {
-	grbuild := &BookGroupBy{config: bq.config}
+func (bq *BusQuery) GroupBy(field string, fields ...string) *BusGroupBy {
+	grbuild := &BusGroupBy{config: bq.config}
 	grbuild.fields = append([]string{field}, fields...)
 	grbuild.path = func(ctx context.Context) (prev *sql.Selector, err error) {
 		if err := bq.prepareQuery(ctx); err != nil {
@@ -271,7 +271,7 @@ func (bq *BookQuery) GroupBy(field string, fields ...string) *BookGroupBy {
 		}
 		return bq.sqlQuery(ctx), nil
 	}
-	grbuild.label = book.Label
+	grbuild.label = bus.Label
 	grbuild.flds, grbuild.scan = &grbuild.fields, grbuild.Scan
 	return grbuild
 }
@@ -282,24 +282,24 @@ func (bq *BookQuery) GroupBy(field string, fields ...string) *BookGroupBy {
 // Example:
 //
 //	var v []struct {
-//		BookName string `json:"book_name,omitempty"`
+//		BusName string `json:"bus_name,omitempty"`
 //	}
 //
-//	client.Book.Query().
-//		Select(book.FieldBookName).
+//	client.Bus.Query().
+//		Select(bus.FieldBusName).
 //		Scan(ctx, &v)
 //
-func (bq *BookQuery) Select(fields ...string) *BookSelect {
+func (bq *BusQuery) Select(fields ...string) *BusSelect {
 	bq.fields = append(bq.fields, fields...)
-	selbuild := &BookSelect{BookQuery: bq}
-	selbuild.label = book.Label
+	selbuild := &BusSelect{BusQuery: bq}
+	selbuild.label = bus.Label
 	selbuild.flds, selbuild.scan = &bq.fields, selbuild.Scan
 	return selbuild
 }
 
-func (bq *BookQuery) prepareQuery(ctx context.Context) error {
+func (bq *BusQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range bq.fields {
-		if !book.ValidColumn(f) {
+		if !bus.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -313,16 +313,16 @@ func (bq *BookQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (bq *BookQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Book, error) {
+func (bq *BusQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Bus, error) {
 	var (
-		nodes = []*Book{}
+		nodes = []*Bus{}
 		_spec = bq.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
-		return (*Book).scanValues(nil, columns)
+		return (*Bus).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []interface{}) error {
-		node := &Book{config: bq.config}
+		node := &Bus{config: bq.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
@@ -338,7 +338,7 @@ func (bq *BookQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Book, e
 	return nodes, nil
 }
 
-func (bq *BookQuery) sqlCount(ctx context.Context) (int, error) {
+func (bq *BusQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := bq.querySpec()
 	_spec.Node.Columns = bq.fields
 	if len(bq.fields) > 0 {
@@ -347,7 +347,7 @@ func (bq *BookQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, bq.driver, _spec)
 }
 
-func (bq *BookQuery) sqlExist(ctx context.Context) (bool, error) {
+func (bq *BusQuery) sqlExist(ctx context.Context) (bool, error) {
 	n, err := bq.sqlCount(ctx)
 	if err != nil {
 		return false, fmt.Errorf("ent: check existence: %w", err)
@@ -355,14 +355,14 @@ func (bq *BookQuery) sqlExist(ctx context.Context) (bool, error) {
 	return n > 0, nil
 }
 
-func (bq *BookQuery) querySpec() *sqlgraph.QuerySpec {
+func (bq *BusQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := &sqlgraph.QuerySpec{
 		Node: &sqlgraph.NodeSpec{
-			Table:   book.Table,
-			Columns: book.Columns,
+			Table:   bus.Table,
+			Columns: bus.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: book.FieldID,
+				Type:   field.TypeInt64,
+				Column: bus.FieldID,
 			},
 		},
 		From:   bq.sql,
@@ -373,9 +373,9 @@ func (bq *BookQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := bq.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, book.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, bus.FieldID)
 		for i := range fields {
-			if fields[i] != book.FieldID {
+			if fields[i] != bus.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -403,12 +403,12 @@ func (bq *BookQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (bq *BookQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (bq *BusQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(bq.driver.Dialect())
-	t1 := builder.Table(book.Table)
+	t1 := builder.Table(bus.Table)
 	columns := bq.fields
 	if len(columns) == 0 {
-		columns = book.Columns
+		columns = bus.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if bq.sql != nil {
@@ -435,8 +435,8 @@ func (bq *BookQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// BookGroupBy is the group-by builder for Book entities.
-type BookGroupBy struct {
+// BusGroupBy is the group-by builder for Bus entities.
+type BusGroupBy struct {
 	config
 	selector
 	fields []string
@@ -447,13 +447,13 @@ type BookGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (bgb *BookGroupBy) Aggregate(fns ...AggregateFunc) *BookGroupBy {
+func (bgb *BusGroupBy) Aggregate(fns ...AggregateFunc) *BusGroupBy {
 	bgb.fns = append(bgb.fns, fns...)
 	return bgb
 }
 
 // Scan applies the group-by query and scans the result into the given value.
-func (bgb *BookGroupBy) Scan(ctx context.Context, v interface{}) error {
+func (bgb *BusGroupBy) Scan(ctx context.Context, v interface{}) error {
 	query, err := bgb.path(ctx)
 	if err != nil {
 		return err
@@ -462,9 +462,9 @@ func (bgb *BookGroupBy) Scan(ctx context.Context, v interface{}) error {
 	return bgb.sqlScan(ctx, v)
 }
 
-func (bgb *BookGroupBy) sqlScan(ctx context.Context, v interface{}) error {
+func (bgb *BusGroupBy) sqlScan(ctx context.Context, v interface{}) error {
 	for _, f := range bgb.fields {
-		if !book.ValidColumn(f) {
+		if !bus.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("invalid field %q for group-by", f)}
 		}
 	}
@@ -481,7 +481,7 @@ func (bgb *BookGroupBy) sqlScan(ctx context.Context, v interface{}) error {
 	return sql.ScanSlice(rows, v)
 }
 
-func (bgb *BookGroupBy) sqlQuery() *sql.Selector {
+func (bgb *BusGroupBy) sqlQuery() *sql.Selector {
 	selector := bgb.sql.Select()
 	aggregation := make([]string, 0, len(bgb.fns))
 	for _, fn := range bgb.fns {
@@ -500,24 +500,24 @@ func (bgb *BookGroupBy) sqlQuery() *sql.Selector {
 	return selector.GroupBy(selector.Columns(bgb.fields...)...)
 }
 
-// BookSelect is the builder for selecting fields of Book entities.
-type BookSelect struct {
-	*BookQuery
+// BusSelect is the builder for selecting fields of Bus entities.
+type BusSelect struct {
+	*BusQuery
 	selector
 	// intermediate query (i.e. traversal path).
 	sql *sql.Selector
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (bs *BookSelect) Scan(ctx context.Context, v interface{}) error {
+func (bs *BusSelect) Scan(ctx context.Context, v interface{}) error {
 	if err := bs.prepareQuery(ctx); err != nil {
 		return err
 	}
-	bs.sql = bs.BookQuery.sqlQuery(ctx)
+	bs.sql = bs.BusQuery.sqlQuery(ctx)
 	return bs.sqlScan(ctx, v)
 }
 
-func (bs *BookSelect) sqlScan(ctx context.Context, v interface{}) error {
+func (bs *BusSelect) sqlScan(ctx context.Context, v interface{}) error {
 	rows := &sql.Rows{}
 	query, args := bs.sql.Query()
 	if err := bs.driver.Query(ctx, query, args, rows); err != nil {

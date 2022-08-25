@@ -10,8 +10,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/HaleNing/bustrack/src/Model/ent/book"
-	"github.com/HaleNing/bustrack/src/Model/ent/user"
+	"github.com/HaleNing/bustrack/src/Model/ent/bus"
+	"github.com/HaleNing/bustrack/src/Model/ent/bus_driver"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -32,8 +32,8 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		book.Table: book.ValidColumn,
-		user.Table: user.ValidColumn,
+		bus.Table:        bus.ValidColumn,
+		bus_driver.Table: bus_driver.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

@@ -3,47 +3,102 @@
 package ent
 
 import (
-	"github.com/HaleNing/bustrack/src/Model/ent/book"
+	"time"
+
+	"github.com/HaleNing/bustrack/src/Model/ent/bus"
+	"github.com/HaleNing/bustrack/src/Model/ent/bus_driver"
 	"github.com/HaleNing/bustrack/src/Model/ent/schema"
-	"github.com/HaleNing/bustrack/src/Model/ent/user"
 )
 
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	bookFields := schema.Book{}.Fields()
-	_ = bookFields
-	// bookDescBookName is the schema descriptor for book_name field.
-	bookDescBookName := bookFields[0].Descriptor()
-	// book.DefaultBookName holds the default value on creation for the book_name field.
-	book.DefaultBookName = bookDescBookName.Default.(string)
-	// bookDescAuthor is the schema descriptor for author field.
-	bookDescAuthor := bookFields[1].Descriptor()
-	// book.AuthorValidator is a validator for the "author" field. It is called by the builders before save.
-	book.AuthorValidator = func() func(string) error {
-		validators := bookDescAuthor.Validators
+	busFields := schema.Bus{}.Fields()
+	_ = busFields
+	// busDescBusName is the schema descriptor for bus_name field.
+	busDescBusName := busFields[1].Descriptor()
+	// bus.BusNameValidator is a validator for the "bus_name" field. It is called by the builders before save.
+	bus.BusNameValidator = busDescBusName.Validators[0].(func(string) error)
+	// busDescCreateTime is the schema descriptor for create_time field.
+	busDescCreateTime := busFields[2].Descriptor()
+	// bus.DefaultCreateTime holds the default value on creation for the create_time field.
+	bus.DefaultCreateTime = busDescCreateTime.Default.(time.Time)
+	// busDescUpdateTime is the schema descriptor for update_time field.
+	busDescUpdateTime := busFields[3].Descriptor()
+	// bus.DefaultUpdateTime holds the default value on creation for the update_time field.
+	bus.DefaultUpdateTime = busDescUpdateTime.Default.(time.Time)
+	// busDescIsDelete is the schema descriptor for is_delete field.
+	busDescIsDelete := busFields[5].Descriptor()
+	// bus.DefaultIsDelete holds the default value on creation for the is_delete field.
+	bus.DefaultIsDelete = busDescIsDelete.Default.(int8)
+	bus_driverFields := schema.Bus_driver{}.Fields()
+	_ = bus_driverFields
+	// bus_driverDescUserName is the schema descriptor for user_name field.
+	bus_driverDescUserName := bus_driverFields[1].Descriptor()
+	// bus_driver.UserNameValidator is a validator for the "user_name" field. It is called by the builders before save.
+	bus_driver.UserNameValidator = func() func(string) error {
+		validators := bus_driverDescUserName.Validators
 		fns := [...]func(string) error{
 			validators[0].(func(string) error),
 			validators[1].(func(string) error),
 		}
-		return func(author string) error {
+		return func(user_name string) error {
 			for _, fn := range fns {
-				if err := fn(author); err != nil {
+				if err := fn(user_name); err != nil {
 					return err
 				}
 			}
 			return nil
 		}
 	}()
-	userFields := schema.User{}.Fields()
-	_ = userFields
-	// userDescAge is the schema descriptor for age field.
-	userDescAge := userFields[0].Descriptor()
-	// user.AgeValidator is a validator for the "age" field. It is called by the builders before save.
-	user.AgeValidator = userDescAge.Validators[0].(func(int) error)
-	// userDescName is the schema descriptor for name field.
-	userDescName := userFields[1].Descriptor()
-	// user.DefaultName holds the default value on creation for the name field.
-	user.DefaultName = userDescName.Default.(string)
+	// bus_driverDescCreateTime is the schema descriptor for create_time field.
+	bus_driverDescCreateTime := bus_driverFields[2].Descriptor()
+	// bus_driver.DefaultCreateTime holds the default value on creation for the create_time field.
+	bus_driver.DefaultCreateTime = bus_driverDescCreateTime.Default.(time.Time)
+	// bus_driverDescUpdateTime is the schema descriptor for update_time field.
+	bus_driverDescUpdateTime := bus_driverFields[3].Descriptor()
+	// bus_driver.DefaultUpdateTime holds the default value on creation for the update_time field.
+	bus_driver.DefaultUpdateTime = bus_driverDescUpdateTime.Default.(time.Time)
+	// bus_driverDescIsDelete is the schema descriptor for is_delete field.
+	bus_driverDescIsDelete := bus_driverFields[4].Descriptor()
+	// bus_driver.DefaultIsDelete holds the default value on creation for the is_delete field.
+	bus_driver.DefaultIsDelete = bus_driverDescIsDelete.Default.(int8)
+	// bus_driverDescUserAge is the schema descriptor for user_age field.
+	bus_driverDescUserAge := bus_driverFields[5].Descriptor()
+	// bus_driver.UserAgeValidator is a validator for the "user_age" field. It is called by the builders before save.
+	bus_driver.UserAgeValidator = func() func(int8) error {
+		validators := bus_driverDescUserAge.Validators
+		fns := [...]func(int8) error{
+			validators[0].(func(int8) error),
+			validators[1].(func(int8) error),
+		}
+		return func(user_age int8) error {
+			for _, fn := range fns {
+				if err := fn(user_age); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// bus_driverDescCareerAge is the schema descriptor for career_age field.
+	bus_driverDescCareerAge := bus_driverFields[7].Descriptor()
+	// bus_driver.CareerAgeValidator is a validator for the "career_age" field. It is called by the builders before save.
+	bus_driver.CareerAgeValidator = func() func(int8) error {
+		validators := bus_driverDescCareerAge.Validators
+		fns := [...]func(int8) error{
+			validators[0].(func(int8) error),
+			validators[1].(func(int8) error),
+			validators[2].(func(int8) error),
+		}
+		return func(career_age int8) error {
+			for _, fn := range fns {
+				if err := fn(career_age); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 }

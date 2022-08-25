@@ -17,7 +17,7 @@ type Config struct {
 var DBConn *ent.Client
 
 func NewConnection() (*ent.Client, error) {
-	client, err := ent.Open("postgres", "postgres://ning:@localhost:5432/postgres?sslmode=disable")
+	client, err := ent.Open("postgres", "postgres://ning:@localhost:5432/bus_track?sslmode=disable")
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
