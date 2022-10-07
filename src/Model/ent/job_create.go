@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/HaleNing/bustrack/src/Model/ent/job"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
 )
 
 // JobCreate is the builder for creating a Job entity.

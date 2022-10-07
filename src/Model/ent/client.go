@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/HaleNing/bustrack/src/Model/ent/migrate"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/migrate"
 
-	"github.com/HaleNing/bustrack/src/Model/ent/job"
-	"github.com/HaleNing/bustrack/src/Model/ent/user"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"

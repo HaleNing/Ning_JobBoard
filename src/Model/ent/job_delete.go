@@ -9,8 +9,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/HaleNing/bustrack/src/Model/ent/job"
-	"github.com/HaleNing/bustrack/src/Model/ent/predicate"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/predicate"
 )
 
 // JobDelete is the builder for deleting a Job entity.

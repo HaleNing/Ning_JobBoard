@@ -4,7 +4,7 @@ package job
 
 import (
 	"entgo.io/ent/dialect/sql"
-	"github.com/HaleNing/bustrack/src/Model/ent/predicate"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

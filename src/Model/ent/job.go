@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/HaleNing/bustrack/src/Model/ent/job"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
 )
 
 // Job is the model entity for the Job schema.

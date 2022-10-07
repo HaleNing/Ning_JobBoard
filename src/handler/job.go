@@ -3,9 +3,9 @@ package handler
 import (
 	"context"
 	"encoding/json"
-	"github.com/HaleNing/bustrack/src/Model/ent/job"
-	"github.com/HaleNing/bustrack/src/database"
-	"github.com/HaleNing/bustrack/src/param"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
+	"github.com/HaleNing/Ning_JobBoard/src/database"
+	"github.com/HaleNing/Ning_JobBoard/src/param"
 	"github.com/gofiber/fiber/v2"
 	"log"
 	"time"
@@ -47,23 +47,6 @@ func createNewJobHandler(ctx *fiber.Ctx) error {
 	} else {
 		return ctx.SendString("create new job  success")
 	}
-}
-
-func updateBusHandler(ctx *fiber.Ctx) error {
-	return ctx.SendString("ok")
-	//param := new(param.BusUpdateParam)
-	//if err := ctx.BodyParser(param); err != nil {
-	//	log.Println(err)
-	//	return fiber.NewError(fiber.StatusBadRequest, "param is nil")
-	//}
-	//res, err := delegate.UpBusName(busCtx, param)
-	//log.Println(res)
-	//log.Println(err)
-	//if err != nil {
-	//	return fiber.NewError(fiber.StatusBadRequest, "update have error")
-	//} else {
-	//	return ctx.SendString("update bus success")
-	//}
 }
 
 func getJobsByCompanyNameHandler(ctx *fiber.Ctx) error {

@@ -1,4 +1,4 @@
-module github.com/HaleNing/bustrack
+module github.com/HaleNing/Ning_JobBoard
 
 go 1.18
 

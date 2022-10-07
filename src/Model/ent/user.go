@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/HaleNing/bustrack/src/Model/ent/user"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user"
 )
 
 // User is the model entity for the User schema.

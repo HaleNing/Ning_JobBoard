@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/HaleNing/bustrack/src/Model/ent"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent"
 )
 
 // The JobFunc type is an adapter to allow the use of ordinary

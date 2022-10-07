@@ -9,9 +9,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/HaleNing/bustrack/src/Model/ent/job"
-	"github.com/HaleNing/bustrack/src/Model/ent/predicate"
-	"github.com/HaleNing/bustrack/src/Model/ent/user"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/predicate"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user"
 
 	"entgo.io/ent"
 )

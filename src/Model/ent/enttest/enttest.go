@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"github.com/HaleNing/bustrack/src/Model/ent"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent"
 	// required by schema hooks.
-	_ "github.com/HaleNing/bustrack/src/Model/ent/runtime"
+	_ "github.com/HaleNing/Ning_JobBoard/src/Model/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/HaleNing/bustrack/src/Model/ent/migrate"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/migrate"
 )
 
 type (

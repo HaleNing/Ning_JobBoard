@@ -5,9 +5,9 @@ package ent
 import (
 	"time"
 
-	"github.com/HaleNing/bustrack/src/Model/ent/job"
-	"github.com/HaleNing/bustrack/src/Model/ent/schema"
-	"github.com/HaleNing/bustrack/src/Model/ent/user"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/schema"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user"
 )
 
 // The init function reads all schema descriptors with runtime code

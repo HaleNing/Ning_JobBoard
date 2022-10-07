@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/HaleNing/bustrack/src/Model/ent"
-	"github.com/HaleNing/bustrack/src/database"
-	"github.com/HaleNing/bustrack/src/handler"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent"
+	"github.com/HaleNing/Ning_JobBoard/src/database"
+	"github.com/HaleNing/Ning_JobBoard/src/handler"
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
 	"log"

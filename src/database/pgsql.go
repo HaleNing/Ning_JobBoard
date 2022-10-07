@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/HaleNing/bustrack/src/Model/ent"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent"
 	"log"
 )
 
@@ -17,7 +17,7 @@ type Config struct {
 var DBConn *ent.Client
 
 func NewConnection() (*ent.Client, error) {
-	client, err := ent.Open("postgres", "postgres://ning:@localhost:5432/bus_track?sslmode=disable")
+	client, err := ent.Open("postgres", "postgres://user:passwd@host:5432/ning_jobboard")
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
