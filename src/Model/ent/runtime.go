@@ -5,40 +5,66 @@ package ent
 import (
 	"time"
 
-	"github.com/HaleNing/bustrack/src/Model/ent/bus"
-	"github.com/HaleNing/bustrack/src/Model/ent/bus_driver"
+	"github.com/HaleNing/bustrack/src/Model/ent/job"
 	"github.com/HaleNing/bustrack/src/Model/ent/schema"
+	"github.com/HaleNing/bustrack/src/Model/ent/user"
 )
 
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	busFields := schema.Bus{}.Fields()
-	_ = busFields
-	// busDescBusName is the schema descriptor for bus_name field.
-	busDescBusName := busFields[1].Descriptor()
-	// bus.BusNameValidator is a validator for the "bus_name" field. It is called by the builders before save.
-	bus.BusNameValidator = busDescBusName.Validators[0].(func(string) error)
-	// busDescCreateTime is the schema descriptor for create_time field.
-	busDescCreateTime := busFields[2].Descriptor()
-	// bus.DefaultCreateTime holds the default value on creation for the create_time field.
-	bus.DefaultCreateTime = busDescCreateTime.Default.(time.Time)
-	// busDescUpdateTime is the schema descriptor for update_time field.
-	busDescUpdateTime := busFields[3].Descriptor()
-	// bus.DefaultUpdateTime holds the default value on creation for the update_time field.
-	bus.DefaultUpdateTime = busDescUpdateTime.Default.(time.Time)
-	// busDescIsDelete is the schema descriptor for is_delete field.
-	busDescIsDelete := busFields[5].Descriptor()
-	// bus.DefaultIsDelete holds the default value on creation for the is_delete field.
-	bus.DefaultIsDelete = busDescIsDelete.Default.(int8)
-	bus_driverFields := schema.Bus_driver{}.Fields()
-	_ = bus_driverFields
-	// bus_driverDescUserName is the schema descriptor for user_name field.
-	bus_driverDescUserName := bus_driverFields[1].Descriptor()
-	// bus_driver.UserNameValidator is a validator for the "user_name" field. It is called by the builders before save.
-	bus_driver.UserNameValidator = func() func(string) error {
-		validators := bus_driverDescUserName.Validators
+	jobFields := schema.Job{}.Fields()
+	_ = jobFields
+	// jobDescJobName is the schema descriptor for job_name field.
+	jobDescJobName := jobFields[0].Descriptor()
+	// job.JobNameValidator is a validator for the "job_name" field. It is called by the builders before save.
+	job.JobNameValidator = jobDescJobName.Validators[0].(func(string) error)
+	// jobDescCompanyName is the schema descriptor for company_name field.
+	jobDescCompanyName := jobFields[1].Descriptor()
+	// job.CompanyNameValidator is a validator for the "company_name" field. It is called by the builders before save.
+	job.CompanyNameValidator = jobDescCompanyName.Validators[0].(func(string) error)
+	// jobDescIsExist is the schema descriptor for is_exist field.
+	jobDescIsExist := jobFields[2].Descriptor()
+	// job.DefaultIsExist holds the default value on creation for the is_exist field.
+	job.DefaultIsExist = jobDescIsExist.Default.(bool)
+	// jobDescDescription is the schema descriptor for description field.
+	jobDescDescription := jobFields[3].Descriptor()
+	// job.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
+	job.DescriptionValidator = jobDescDescription.Validators[0].(func(string) error)
+	// jobDescExp is the schema descriptor for exp field.
+	jobDescExp := jobFields[5].Descriptor()
+	// job.ExpValidator is a validator for the "exp" field. It is called by the builders before save.
+	job.ExpValidator = func() func(int8) error {
+		validators := jobDescExp.Validators
+		fns := [...]func(int8) error{
+			validators[0].(func(int8) error),
+			validators[1].(func(int8) error),
+		}
+		return func(exp int8) error {
+			for _, fn := range fns {
+				if err := fn(exp); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// jobDescArea is the schema descriptor for area field.
+	jobDescArea := jobFields[6].Descriptor()
+	// job.AreaValidator is a validator for the "area" field. It is called by the builders before save.
+	job.AreaValidator = jobDescArea.Validators[0].(func(string) error)
+	userFields := schema.User{}.Fields()
+	_ = userFields
+	// userDescRole is the schema descriptor for role field.
+	userDescRole := userFields[0].Descriptor()
+	// user.DefaultRole holds the default value on creation for the role field.
+	user.DefaultRole = userDescRole.Default.(int8)
+	// userDescUserName is the schema descriptor for user_name field.
+	userDescUserName := userFields[1].Descriptor()
+	// user.UserNameValidator is a validator for the "user_name" field. It is called by the builders before save.
+	user.UserNameValidator = func() func(string) error {
+		validators := userDescUserName.Validators
 		fns := [...]func(string) error{
 			validators[0].(func(string) error),
 			validators[1].(func(string) error),
@@ -52,53 +78,18 @@ func init() {
 			return nil
 		}
 	}()
-	// bus_driverDescCreateTime is the schema descriptor for create_time field.
-	bus_driverDescCreateTime := bus_driverFields[2].Descriptor()
-	// bus_driver.DefaultCreateTime holds the default value on creation for the create_time field.
-	bus_driver.DefaultCreateTime = bus_driverDescCreateTime.Default.(time.Time)
-	// bus_driverDescUpdateTime is the schema descriptor for update_time field.
-	bus_driverDescUpdateTime := bus_driverFields[3].Descriptor()
-	// bus_driver.DefaultUpdateTime holds the default value on creation for the update_time field.
-	bus_driver.DefaultUpdateTime = bus_driverDescUpdateTime.Default.(time.Time)
-	// bus_driverDescIsDelete is the schema descriptor for is_delete field.
-	bus_driverDescIsDelete := bus_driverFields[4].Descriptor()
-	// bus_driver.DefaultIsDelete holds the default value on creation for the is_delete field.
-	bus_driver.DefaultIsDelete = bus_driverDescIsDelete.Default.(int8)
-	// bus_driverDescUserAge is the schema descriptor for user_age field.
-	bus_driverDescUserAge := bus_driverFields[5].Descriptor()
-	// bus_driver.UserAgeValidator is a validator for the "user_age" field. It is called by the builders before save.
-	bus_driver.UserAgeValidator = func() func(int8) error {
-		validators := bus_driverDescUserAge.Validators
-		fns := [...]func(int8) error{
-			validators[0].(func(int8) error),
-			validators[1].(func(int8) error),
-		}
-		return func(user_age int8) error {
-			for _, fn := range fns {
-				if err := fn(user_age); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// bus_driverDescCareerAge is the schema descriptor for career_age field.
-	bus_driverDescCareerAge := bus_driverFields[7].Descriptor()
-	// bus_driver.CareerAgeValidator is a validator for the "career_age" field. It is called by the builders before save.
-	bus_driver.CareerAgeValidator = func() func(int8) error {
-		validators := bus_driverDescCareerAge.Validators
-		fns := [...]func(int8) error{
-			validators[0].(func(int8) error),
-			validators[1].(func(int8) error),
-			validators[2].(func(int8) error),
-		}
-		return func(career_age int8) error {
-			for _, fn := range fns {
-				if err := fn(career_age); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
+	// userDescIsExist is the schema descriptor for is_exist field.
+	userDescIsExist := userFields[2].Descriptor()
+	// user.DefaultIsExist holds the default value on creation for the is_exist field.
+	user.DefaultIsExist = userDescIsExist.Default.(bool)
+	// userDescCreateTime is the schema descriptor for create_time field.
+	userDescCreateTime := userFields[3].Descriptor()
+	// user.DefaultCreateTime holds the default value on creation for the create_time field.
+	user.DefaultCreateTime = userDescCreateTime.Default.(time.Time)
+	// userDescUpdateTime is the schema descriptor for update_time field.
+	userDescUpdateTime := userFields[4].Descriptor()
+	// user.DefaultUpdateTime holds the default value on creation for the update_time field.
+	user.DefaultUpdateTime = userDescUpdateTime.Default.(func() time.Time)
+	// user.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
+	user.UpdateDefaultUpdateTime = userDescUpdateTime.UpdateDefault.(func() time.Time)
 }

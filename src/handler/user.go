@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func DriverApi(api fiber.Router) {
+func UserApi(api fiber.Router) {
 	api.Get("/bus/name", nameHandler)
 	api.Get("/driver/age", ageHandler)
 }

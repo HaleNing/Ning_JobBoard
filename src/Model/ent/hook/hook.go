@@ -9,28 +9,28 @@ import (
 	"github.com/HaleNing/bustrack/src/Model/ent"
 )
 
-// The BusFunc type is an adapter to allow the use of ordinary
-// function as Bus mutator.
-type BusFunc func(context.Context, *ent.BusMutation) (ent.Value, error)
+// The JobFunc type is an adapter to allow the use of ordinary
+// function as Job mutator.
+type JobFunc func(context.Context, *ent.JobMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f BusFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.BusMutation)
+func (f JobFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.JobMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BusMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.JobMutation", m)
 	}
 	return f(ctx, mv)
 }
 
-// The Bus_driverFunc type is an adapter to allow the use of ordinary
-// function as Bus_driver mutator.
-type Bus_driverFunc func(context.Context, *ent.BusDriverMutation) (ent.Value, error)
+// The UserFunc type is an adapter to allow the use of ordinary
+// function as User mutator.
+type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f Bus_driverFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.BusDriverMutation)
+func (f UserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.UserMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BusDriverMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
 	}
 	return f(ctx, mv)
 }
@@ -130,7 +130,6 @@ func HasFields(field string, fields ...string) Condition {
 // If executes the given hook under condition.
 //
 //	hook.If(ComputeAverage, And(HasFields(...), HasAddedFields(...)))
-//
 func If(hk ent.Hook, cond Condition) ent.Hook {
 	return func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
@@ -145,7 +144,6 @@ func If(hk ent.Hook, cond Condition) ent.Hook {
 // On executes the given hook only for the given operation.
 //
 //	hook.On(Log, ent.Delete|ent.Create)
-//
 func On(hk ent.Hook, op ent.Op) ent.Hook {
 	return If(hk, HasOp(op))
 }
@@ -153,7 +151,6 @@ func On(hk ent.Hook, op ent.Op) ent.Hook {
 // Unless skips the given hook only for the given operation.
 //
 //	hook.Unless(Log, ent.Update|ent.UpdateOne)
-//
 func Unless(hk ent.Hook, op ent.Op) ent.Hook {
 	return If(hk, Not(HasOp(op)))
 }
@@ -174,7 +171,6 @@ func FixedError(err error) ent.Hook {
 //			Reject(ent.Delete|ent.Update),
 //		}
 //	}
-//
 func Reject(op ent.Op) ent.Hook {
 	hk := FixedError(fmt.Errorf("%s operation is not allowed", op))
 	return On(hk, op)

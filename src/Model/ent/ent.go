@@ -10,8 +10,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/HaleNing/bustrack/src/Model/ent/bus"
-	"github.com/HaleNing/bustrack/src/Model/ent/bus_driver"
+	"github.com/HaleNing/bustrack/src/Model/ent/job"
+	"github.com/HaleNing/bustrack/src/Model/ent/user"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -32,8 +32,8 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		bus.Table:        bus.ValidColumn,
-		bus_driver.Table: bus_driver.ValidColumn,
+		job.Table:  job.ValidColumn,
+		user.Table: user.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {
@@ -83,7 +83,6 @@ type AggregateFunc func(*sql.Selector) string
 //	GroupBy(field1, field2).
 //	Aggregate(ent.As(ent.Sum(field1), "sum_field1"), (ent.As(ent.Sum(field2), "sum_field2")).
 //	Scan(ctx, &v)
-//
 func As(fn AggregateFunc, end string) AggregateFunc {
 	return func(s *sql.Selector) string {
 		return sql.As(fn(s), end)
@@ -266,11 +265,11 @@ func IsConstraintError(err error) bool {
 type selector struct {
 	label string
 	flds  *[]string
-	scan  func(context.Context, interface{}) error
+	scan  func(context.Context, any) error
 }
 
 // ScanX is like Scan, but panics if an error occurs.
-func (s *selector) ScanX(ctx context.Context, v interface{}) {
+func (s *selector) ScanX(ctx context.Context, v any) {
 	if err := s.scan(ctx, v); err != nil {
 		panic(err)
 	}

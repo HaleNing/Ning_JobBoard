@@ -8,42 +8,43 @@ import (
 )
 
 var (
-	// BusColumns holds the columns for the "bus" table.
-	BusColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "bus_name", Type: field.TypeString},
+	// JobsColumns holds the columns for the "jobs" table.
+	JobsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "job_name", Type: field.TypeString},
+		{Name: "company_name", Type: field.TypeString},
+		{Name: "is_exist", Type: field.TypeBool, Default: true},
+		{Name: "description", Type: field.TypeString, Size: 2147483647},
+		{Name: "is_remote", Type: field.TypeBool},
+		{Name: "exp", Type: field.TypeInt8},
+		{Name: "area", Type: field.TypeString},
+	}
+	// JobsTable holds the schema information for the "jobs" table.
+	JobsTable = &schema.Table{
+		Name:       "jobs",
+		Columns:    JobsColumns,
+		PrimaryKey: []*schema.Column{JobsColumns[0]},
+	}
+	// UsersColumns holds the columns for the "users" table.
+	UsersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "role", Type: field.TypeInt8, Default: 0},
+		{Name: "user_name", Type: field.TypeString, Unique: true, Size: 16},
+		{Name: "is_exist", Type: field.TypeBool, Default: true},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
-		{Name: "user_id", Type: field.TypeInt64},
-		{Name: "is_delete", Type: field.TypeInt8, Default: 1},
+		{Name: "user_title", Type: field.TypeString},
 	}
-	// BusTable holds the schema information for the "bus" table.
-	BusTable = &schema.Table{
-		Name:       "bus",
-		Columns:    BusColumns,
-		PrimaryKey: []*schema.Column{BusColumns[0]},
-	}
-	// BusDriversColumns holds the columns for the "bus_drivers" table.
-	BusDriversColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "user_name", Type: field.TypeString, Size: 25},
-		{Name: "create_time", Type: field.TypeTime},
-		{Name: "update_time", Type: field.TypeTime},
-		{Name: "is_delete", Type: field.TypeInt8, Default: 1},
-		{Name: "user_age", Type: field.TypeInt8},
-		{Name: "sex", Type: field.TypeBool},
-		{Name: "career_age", Type: field.TypeInt8},
-	}
-	// BusDriversTable holds the schema information for the "bus_drivers" table.
-	BusDriversTable = &schema.Table{
-		Name:       "bus_drivers",
-		Columns:    BusDriversColumns,
-		PrimaryKey: []*schema.Column{BusDriversColumns[0]},
+	// UsersTable holds the schema information for the "users" table.
+	UsersTable = &schema.Table{
+		Name:       "users",
+		Columns:    UsersColumns,
+		PrimaryKey: []*schema.Column{UsersColumns[0]},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		BusTable,
-		BusDriversTable,
+		JobsTable,
+		UsersTable,
 	}
 )
 

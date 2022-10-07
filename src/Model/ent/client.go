@@ -4,13 +4,14 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 
 	"github.com/HaleNing/bustrack/src/Model/ent/migrate"
 
-	"github.com/HaleNing/bustrack/src/Model/ent/bus"
-	"github.com/HaleNing/bustrack/src/Model/ent/bus_driver"
+	"github.com/HaleNing/bustrack/src/Model/ent/job"
+	"github.com/HaleNing/bustrack/src/Model/ent/user"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -21,10 +22,10 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// Bus is the client for interacting with the Bus builders.
-	Bus *BusClient
-	// Bus_driver is the client for interacting with the Bus_driver builders.
-	Bus_driver *Bus_driverClient
+	// Job is the client for interacting with the Job builders.
+	Job *JobClient
+	// User is the client for interacting with the User builders.
+	User *UserClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -38,8 +39,8 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.Bus = NewBusClient(c.config)
-	c.Bus_driver = NewBus_driverClient(c.config)
+	c.Job = NewJobClient(c.config)
+	c.User = NewUserClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -62,7 +63,7 @@ func Open(driverName, dataSourceName string, options ...Option) (*Client, error)
 // is used until the transaction is committed or rolled back.
 func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	if _, ok := c.driver.(*txDriver); ok {
-		return nil, fmt.Errorf("ent: cannot start a transaction within a transaction")
+		return nil, errors.New("ent: cannot start a transaction within a transaction")
 	}
 	tx, err := newTx(ctx, c.driver)
 	if err != nil {
@@ -71,17 +72,17 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:        ctx,
-		config:     cfg,
-		Bus:        NewBusClient(cfg),
-		Bus_driver: NewBus_driverClient(cfg),
+		ctx:    ctx,
+		config: cfg,
+		Job:    NewJobClient(cfg),
+		User:   NewUserClient(cfg),
 	}, nil
 }
 
 // BeginTx returns a transactional client with specified options.
 func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) {
 	if _, ok := c.driver.(*txDriver); ok {
-		return nil, fmt.Errorf("ent: cannot start a transaction within a transaction")
+		return nil, errors.New("ent: cannot start a transaction within a transaction")
 	}
 	tx, err := c.driver.(interface {
 		BeginTx(context.Context, *sql.TxOptions) (dialect.Tx, error)
@@ -92,20 +93,19 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:        ctx,
-		config:     cfg,
-		Bus:        NewBusClient(cfg),
-		Bus_driver: NewBus_driverClient(cfg),
+		ctx:    ctx,
+		config: cfg,
+		Job:    NewJobClient(cfg),
+		User:   NewUserClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Bus.
+//		Job.
 //		Query().
 //		Count(ctx)
-//
 func (c *Client) Debug() *Client {
 	if c.debug {
 		return c
@@ -125,88 +125,88 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Bus.Use(hooks...)
-	c.Bus_driver.Use(hooks...)
+	c.Job.Use(hooks...)
+	c.User.Use(hooks...)
 }
 
-// BusClient is a client for the Bus schema.
-type BusClient struct {
+// JobClient is a client for the Job schema.
+type JobClient struct {
 	config
 }
 
-// NewBusClient returns a client for the Bus from the given config.
-func NewBusClient(c config) *BusClient {
-	return &BusClient{config: c}
+// NewJobClient returns a client for the Job from the given config.
+func NewJobClient(c config) *JobClient {
+	return &JobClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `bus.Hooks(f(g(h())))`.
-func (c *BusClient) Use(hooks ...Hook) {
-	c.hooks.Bus = append(c.hooks.Bus, hooks...)
+// A call to `Use(f, g, h)` equals to `job.Hooks(f(g(h())))`.
+func (c *JobClient) Use(hooks ...Hook) {
+	c.hooks.Job = append(c.hooks.Job, hooks...)
 }
 
-// Create returns a builder for creating a Bus entity.
-func (c *BusClient) Create() *BusCreate {
-	mutation := newBusMutation(c.config, OpCreate)
-	return &BusCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Job entity.
+func (c *JobClient) Create() *JobCreate {
+	mutation := newJobMutation(c.config, OpCreate)
+	return &JobCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Bus entities.
-func (c *BusClient) CreateBulk(builders ...*BusCreate) *BusCreateBulk {
-	return &BusCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Job entities.
+func (c *JobClient) CreateBulk(builders ...*JobCreate) *JobCreateBulk {
+	return &JobCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Bus.
-func (c *BusClient) Update() *BusUpdate {
-	mutation := newBusMutation(c.config, OpUpdate)
-	return &BusUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Job.
+func (c *JobClient) Update() *JobUpdate {
+	mutation := newJobMutation(c.config, OpUpdate)
+	return &JobUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *BusClient) UpdateOne(b *Bus) *BusUpdateOne {
-	mutation := newBusMutation(c.config, OpUpdateOne, withBus(b))
-	return &BusUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *JobClient) UpdateOne(j *Job) *JobUpdateOne {
+	mutation := newJobMutation(c.config, OpUpdateOne, withJob(j))
+	return &JobUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *BusClient) UpdateOneID(id int64) *BusUpdateOne {
-	mutation := newBusMutation(c.config, OpUpdateOne, withBusID(id))
-	return &BusUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *JobClient) UpdateOneID(id int) *JobUpdateOne {
+	mutation := newJobMutation(c.config, OpUpdateOne, withJobID(id))
+	return &JobUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Bus.
-func (c *BusClient) Delete() *BusDelete {
-	mutation := newBusMutation(c.config, OpDelete)
-	return &BusDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Job.
+func (c *JobClient) Delete() *JobDelete {
+	mutation := newJobMutation(c.config, OpDelete)
+	return &JobDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *BusClient) DeleteOne(b *Bus) *BusDeleteOne {
-	return c.DeleteOneID(b.ID)
+func (c *JobClient) DeleteOne(j *Job) *JobDeleteOne {
+	return c.DeleteOneID(j.ID)
 }
 
 // DeleteOne returns a builder for deleting the given entity by its id.
-func (c *BusClient) DeleteOneID(id int64) *BusDeleteOne {
-	builder := c.Delete().Where(bus.ID(id))
+func (c *JobClient) DeleteOneID(id int) *JobDeleteOne {
+	builder := c.Delete().Where(job.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &BusDeleteOne{builder}
+	return &JobDeleteOne{builder}
 }
 
-// Query returns a query builder for Bus.
-func (c *BusClient) Query() *BusQuery {
-	return &BusQuery{
+// Query returns a query builder for Job.
+func (c *JobClient) Query() *JobQuery {
+	return &JobQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a Bus entity by its id.
-func (c *BusClient) Get(ctx context.Context, id int64) (*Bus, error) {
-	return c.Query().Where(bus.ID(id)).Only(ctx)
+// Get returns a Job entity by its id.
+func (c *JobClient) Get(ctx context.Context, id int) (*Job, error) {
+	return c.Query().Where(job.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *BusClient) GetX(ctx context.Context, id int64) *Bus {
+func (c *JobClient) GetX(ctx context.Context, id int) *Job {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -215,88 +215,88 @@ func (c *BusClient) GetX(ctx context.Context, id int64) *Bus {
 }
 
 // Hooks returns the client hooks.
-func (c *BusClient) Hooks() []Hook {
-	return c.hooks.Bus
+func (c *JobClient) Hooks() []Hook {
+	return c.hooks.Job
 }
 
-// Bus_driverClient is a client for the Bus_driver schema.
-type Bus_driverClient struct {
+// UserClient is a client for the User schema.
+type UserClient struct {
 	config
 }
 
-// NewBus_driverClient returns a client for the Bus_driver from the given config.
-func NewBus_driverClient(c config) *Bus_driverClient {
-	return &Bus_driverClient{config: c}
+// NewUserClient returns a client for the User from the given config.
+func NewUserClient(c config) *UserClient {
+	return &UserClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `bus_driver.Hooks(f(g(h())))`.
-func (c *Bus_driverClient) Use(hooks ...Hook) {
-	c.hooks.Bus_driver = append(c.hooks.Bus_driver, hooks...)
+// A call to `Use(f, g, h)` equals to `user.Hooks(f(g(h())))`.
+func (c *UserClient) Use(hooks ...Hook) {
+	c.hooks.User = append(c.hooks.User, hooks...)
 }
 
-// Create returns a builder for creating a Bus_driver entity.
-func (c *Bus_driverClient) Create() *BusDriverCreate {
-	mutation := newBusDriverMutation(c.config, OpCreate)
-	return &BusDriverCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a User entity.
+func (c *UserClient) Create() *UserCreate {
+	mutation := newUserMutation(c.config, OpCreate)
+	return &UserCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Bus_driver entities.
-func (c *Bus_driverClient) CreateBulk(builders ...*BusDriverCreate) *BusDriverCreateBulk {
-	return &BusDriverCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of User entities.
+func (c *UserClient) CreateBulk(builders ...*UserCreate) *UserCreateBulk {
+	return &UserCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Bus_driver.
-func (c *Bus_driverClient) Update() *BusDriverUpdate {
-	mutation := newBusDriverMutation(c.config, OpUpdate)
-	return &BusDriverUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for User.
+func (c *UserClient) Update() *UserUpdate {
+	mutation := newUserMutation(c.config, OpUpdate)
+	return &UserUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *Bus_driverClient) UpdateOne(bd *Bus_driver) *BusDriverUpdateOne {
-	mutation := newBusDriverMutation(c.config, OpUpdateOne, withBus_driver(bd))
-	return &BusDriverUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *UserClient) UpdateOne(u *User) *UserUpdateOne {
+	mutation := newUserMutation(c.config, OpUpdateOne, withUser(u))
+	return &UserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *Bus_driverClient) UpdateOneID(id int64) *BusDriverUpdateOne {
-	mutation := newBusDriverMutation(c.config, OpUpdateOne, withBus_driverID(id))
-	return &BusDriverUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *UserClient) UpdateOneID(id int) *UserUpdateOne {
+	mutation := newUserMutation(c.config, OpUpdateOne, withUserID(id))
+	return &UserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Bus_driver.
-func (c *Bus_driverClient) Delete() *BusDriverDelete {
-	mutation := newBusDriverMutation(c.config, OpDelete)
-	return &BusDriverDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for User.
+func (c *UserClient) Delete() *UserDelete {
+	mutation := newUserMutation(c.config, OpDelete)
+	return &UserDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *Bus_driverClient) DeleteOne(bd *Bus_driver) *BusDriverDeleteOne {
-	return c.DeleteOneID(bd.ID)
+func (c *UserClient) DeleteOne(u *User) *UserDeleteOne {
+	return c.DeleteOneID(u.ID)
 }
 
 // DeleteOne returns a builder for deleting the given entity by its id.
-func (c *Bus_driverClient) DeleteOneID(id int64) *BusDriverDeleteOne {
-	builder := c.Delete().Where(bus_driver.ID(id))
+func (c *UserClient) DeleteOneID(id int) *UserDeleteOne {
+	builder := c.Delete().Where(user.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &BusDriverDeleteOne{builder}
+	return &UserDeleteOne{builder}
 }
 
-// Query returns a query builder for Bus_driver.
-func (c *Bus_driverClient) Query() *BusDriverQuery {
-	return &BusDriverQuery{
+// Query returns a query builder for User.
+func (c *UserClient) Query() *UserQuery {
+	return &UserQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a Bus_driver entity by its id.
-func (c *Bus_driverClient) Get(ctx context.Context, id int64) (*Bus_driver, error) {
-	return c.Query().Where(bus_driver.ID(id)).Only(ctx)
+// Get returns a User entity by its id.
+func (c *UserClient) Get(ctx context.Context, id int) (*User, error) {
+	return c.Query().Where(user.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *Bus_driverClient) GetX(ctx context.Context, id int64) *Bus_driver {
+func (c *UserClient) GetX(ctx context.Context, id int) *User {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -305,6 +305,6 @@ func (c *Bus_driverClient) GetX(ctx context.Context, id int64) *Bus_driver {
 }
 
 // Hooks returns the client hooks.
-func (c *Bus_driverClient) Hooks() []Hook {
-	return c.hooks.Bus_driver
+func (c *UserClient) Hooks() []Hook {
+	return c.hooks.User
 }

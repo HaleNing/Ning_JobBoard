@@ -12,10 +12,10 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
-	// Bus is the client for interacting with the Bus builders.
-	Bus *BusClient
-	// Bus_driver is the client for interacting with the Bus_driver builders.
-	Bus_driver *Bus_driverClient
+	// Job is the client for interacting with the Job builders.
+	Job *JobClient
+	// User is the client for interacting with the User builders.
+	User *UserClient
 
 	// lazily loaded.
 	client     *Client
@@ -151,8 +151,8 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
-	tx.Bus = NewBusClient(tx.config)
-	tx.Bus_driver = NewBus_driverClient(tx.config)
+	tx.Job = NewJobClient(tx.config)
+	tx.User = NewUserClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
@@ -162,7 +162,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Bus.QueryXXX(), the query will be executed
+// applies a query, for example: Job.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.
@@ -201,12 +201,12 @@ func (*txDriver) Commit() error { return nil }
 func (*txDriver) Rollback() error { return nil }
 
 // Exec calls tx.Exec.
-func (tx *txDriver) Exec(ctx context.Context, query string, args, v interface{}) error {
+func (tx *txDriver) Exec(ctx context.Context, query string, args, v any) error {
 	return tx.tx.Exec(ctx, query, args, v)
 }
 
 // Query calls tx.Query.
-func (tx *txDriver) Query(ctx context.Context, query string, args, v interface{}) error {
+func (tx *txDriver) Query(ctx context.Context, query string, args, v any) error {
 	return tx.tx.Query(ctx, query, args, v)
 }
 
