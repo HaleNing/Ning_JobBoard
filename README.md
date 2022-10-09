@@ -1,4 +1,4 @@
-# Ning_JobBoard
+# Ning_JobBoard 😎
 
 > why this name?
 > you may be curious,'Ning' in my personal name, in Germany, 'Xing' is a famous website for user find a new
@@ -9,7 +9,7 @@
 >
 > So, inspire by 'Xing'. I named this project as 'Ning'.
 
-## Capturing Requirements
+## Capturing Requirements 🤔
 
 - As a visitor
     - I want to check all jobs in this job board website,and also can filter some conditional information(country,is
@@ -21,7 +21,7 @@
     - administer can do something like user,but as administer,it can edit everything in this website,like illegal
       message post by some bad user,administer can delete it.
 
-## Tech stack
+## Tech stack 🧰
 
 - Redis
 - PGSQL
