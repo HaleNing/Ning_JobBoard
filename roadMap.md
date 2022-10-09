@@ -3,7 +3,7 @@
 ## Roadmap
 
 ### Frontend
-1. [] implement react website
+1. [ ] implement react website
 
 ### Backend
 
