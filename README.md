@@ -20,3 +20,13 @@
 - As administer
     - administer can do something like user,but as administer,it can edit everything in this website,like illegal
       message post by some bad user,administer can delete it.
+
+## Tech stack
+
+- Redis
+- PGSQL
+- Golang
+- React
+- Framework:
+  - web: [fiber](https://github.com/gofiber/fiber)
+  - orm: [ent](https://github.com/ent/ent)
