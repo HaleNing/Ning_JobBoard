@@ -4,7 +4,7 @@
 *.dll
 *.so
 *.dylib
-
+*.env
 # Test binary, built with `go test -c`
 *.test
 
@@ -15,4 +15,4 @@
 # vendor/
 .idea
 
-/src/database/pgsql.go
+/src/database

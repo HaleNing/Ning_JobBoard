@@ -12,6 +12,7 @@ import (
 
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user_info"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -26,6 +27,8 @@ type Client struct {
 	Job *JobClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// User_info is the client for interacting with the User_info builders.
+	User_info *User_infoClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -41,6 +44,7 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Job = NewJobClient(c.config)
 	c.User = NewUserClient(c.config)
+	c.User_info = NewUser_infoClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -72,10 +76,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Job:    NewJobClient(cfg),
-		User:   NewUserClient(cfg),
+		ctx:       ctx,
+		config:    cfg,
+		Job:       NewJobClient(cfg),
+		User:      NewUserClient(cfg),
+		User_info: NewUser_infoClient(cfg),
 	}, nil
 }
 
@@ -93,10 +98,11 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Job:    NewJobClient(cfg),
-		User:   NewUserClient(cfg),
+		ctx:       ctx,
+		config:    cfg,
+		Job:       NewJobClient(cfg),
+		User:      NewUserClient(cfg),
+		User_info: NewUser_infoClient(cfg),
 	}, nil
 }
 
@@ -127,6 +133,7 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	c.Job.Use(hooks...)
 	c.User.Use(hooks...)
+	c.User_info.Use(hooks...)
 }
 
 // JobClient is a client for the Job schema.
@@ -307,4 +314,94 @@ func (c *UserClient) GetX(ctx context.Context, id int) *User {
 // Hooks returns the client hooks.
 func (c *UserClient) Hooks() []Hook {
 	return c.hooks.User
+}
+
+// User_infoClient is a client for the User_info schema.
+type User_infoClient struct {
+	config
+}
+
+// NewUser_infoClient returns a client for the User_info from the given config.
+func NewUser_infoClient(c config) *User_infoClient {
+	return &User_infoClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `user_info.Hooks(f(g(h())))`.
+func (c *User_infoClient) Use(hooks ...Hook) {
+	c.hooks.User_info = append(c.hooks.User_info, hooks...)
+}
+
+// Create returns a builder for creating a User_info entity.
+func (c *User_infoClient) Create() *UserInfoCreate {
+	mutation := newUserInfoMutation(c.config, OpCreate)
+	return &UserInfoCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of User_info entities.
+func (c *User_infoClient) CreateBulk(builders ...*UserInfoCreate) *UserInfoCreateBulk {
+	return &UserInfoCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for User_info.
+func (c *User_infoClient) Update() *UserInfoUpdate {
+	mutation := newUserInfoMutation(c.config, OpUpdate)
+	return &UserInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *User_infoClient) UpdateOne(ui *User_info) *UserInfoUpdateOne {
+	mutation := newUserInfoMutation(c.config, OpUpdateOne, withUser_info(ui))
+	return &UserInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *User_infoClient) UpdateOneID(id int) *UserInfoUpdateOne {
+	mutation := newUserInfoMutation(c.config, OpUpdateOne, withUser_infoID(id))
+	return &UserInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for User_info.
+func (c *User_infoClient) Delete() *UserInfoDelete {
+	mutation := newUserInfoMutation(c.config, OpDelete)
+	return &UserInfoDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *User_infoClient) DeleteOne(ui *User_info) *UserInfoDeleteOne {
+	return c.DeleteOneID(ui.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *User_infoClient) DeleteOneID(id int) *UserInfoDeleteOne {
+	builder := c.Delete().Where(user_info.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &UserInfoDeleteOne{builder}
+}
+
+// Query returns a query builder for User_info.
+func (c *User_infoClient) Query() *UserInfoQuery {
+	return &UserInfoQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a User_info entity by its id.
+func (c *User_infoClient) Get(ctx context.Context, id int) (*User_info, error) {
+	return c.Query().Where(user_info.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *User_infoClient) GetX(ctx context.Context, id int) *User_info {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *User_infoClient) Hooks() []Hook {
+	return c.hooks.User_info
 }

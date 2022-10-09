@@ -41,10 +41,24 @@ var (
 		Columns:    UsersColumns,
 		PrimaryKey: []*schema.Column{UsersColumns[0]},
 	}
+	// UserInfosColumns holds the columns for the "user_infos" table.
+	UserInfosColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "user_name", Type: field.TypeString, Unique: true},
+		{Name: "salt", Type: field.TypeString},
+		{Name: "passwd_hash", Type: field.TypeString},
+	}
+	// UserInfosTable holds the schema information for the "user_infos" table.
+	UserInfosTable = &schema.Table{
+		Name:       "user_infos",
+		Columns:    UserInfosColumns,
+		PrimaryKey: []*schema.Column{UserInfosColumns[0]},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		JobsTable,
 		UsersTable,
+		UserInfosTable,
 	}
 )
 

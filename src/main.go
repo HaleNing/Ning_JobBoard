@@ -6,6 +6,7 @@ import (
 	"github.com/HaleNing/Ning_JobBoard/src/database"
 	"github.com/HaleNing/Ning_JobBoard/src/handler"
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"log"
 )
@@ -13,19 +14,27 @@ import (
 // world start
 func main() {
 	app := fiber.New()
+	err := godotenv.Load("config.env")
+	if err != nil {
+		log.Fatalf("failed to read env file :[%v]", err)
+	}
 
-	// file in handler will add interface to the fiber app.
-
-	//host=localhost port=5432 user=ning  dbname=postgres sslmode=disable
 	client, _ := database.NewConnection()
+	database.NewRedisConnection()
 	ctx := context.Background()
+	if err != nil {
+		log.Println("redis connect fail")
+		log.Fatal(err)
+	} else {
+		log.Println("redis connect success")
+	}
 	// Run the auto migration tool.
 	if err := client.Schema.Create(ctx); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
-	baseAPi := app.Group("/api")
 
-	handler.BaseAPi(app)
+	handler.BaseAPi(app, ctx)
+	baseAPi := app.Group("/api")
 	handler.UserApi(baseAPi)
 	handler.JobApi(baseAPi, ctx)
 	defer func(client *ent.Client) {

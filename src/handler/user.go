@@ -5,6 +5,7 @@ import (
 )
 
 func UserApi(api fiber.Router) {
+
 	api.Get("/bus/name", nameHandler)
 	api.Get("/driver/age", ageHandler)
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/schema"
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user_info"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -92,4 +93,18 @@ func init() {
 	user.DefaultUpdateTime = userDescUpdateTime.Default.(func() time.Time)
 	// user.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
 	user.UpdateDefaultUpdateTime = userDescUpdateTime.UpdateDefault.(func() time.Time)
+	user_infoFields := schema.User_info{}.Fields()
+	_ = user_infoFields
+	// user_infoDescUserName is the schema descriptor for user_name field.
+	user_infoDescUserName := user_infoFields[0].Descriptor()
+	// user_info.UserNameValidator is a validator for the "user_name" field. It is called by the builders before save.
+	user_info.UserNameValidator = user_infoDescUserName.Validators[0].(func(string) error)
+	// user_infoDescSalt is the schema descriptor for salt field.
+	user_infoDescSalt := user_infoFields[1].Descriptor()
+	// user_info.SaltValidator is a validator for the "salt" field. It is called by the builders before save.
+	user_info.SaltValidator = user_infoDescSalt.Validators[0].(func(string) error)
+	// user_infoDescPasswdHash is the schema descriptor for passwd_hash field.
+	user_infoDescPasswdHash := user_infoFields[2].Descriptor()
+	// user_info.PasswdHashValidator is a validator for the "passwd_hash" field. It is called by the builders before save.
+	user_info.PasswdHashValidator = user_infoDescPasswdHash.Validators[0].(func(string) error)
 }
