@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
@@ -29,6 +30,10 @@ type Job struct {
 	Exp int8 `json:"exp,omitempty"`
 	// job area
 	Area string `json:"area,omitempty"`
+	// create_time
+	CreateTime time.Time `json:"create_time,omitempty"`
+	// update_time
+	UpdateTime time.Time `json:"update_time,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -42,6 +47,8 @@ func (*Job) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case job.FieldJobName, job.FieldCompanyName, job.FieldDescription, job.FieldArea:
 			values[i] = new(sql.NullString)
+		case job.FieldCreateTime, job.FieldUpdateTime:
+			values[i] = new(sql.NullTime)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Job", columns[i])
 		}
@@ -105,6 +112,18 @@ func (j *Job) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				j.Area = value.String
 			}
+		case job.FieldCreateTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field create_time", values[i])
+			} else if value.Valid {
+				j.CreateTime = value.Time
+			}
+		case job.FieldUpdateTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field update_time", values[i])
+			} else if value.Valid {
+				j.UpdateTime = value.Time
+			}
 		}
 	}
 	return nil
@@ -153,6 +172,12 @@ func (j *Job) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("area=")
 	builder.WriteString(j.Area)
+	builder.WriteString(", ")
+	builder.WriteString("create_time=")
+	builder.WriteString(j.CreateTime.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("update_time=")
+	builder.WriteString(j.UpdateTime.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

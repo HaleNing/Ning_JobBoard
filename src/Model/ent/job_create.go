@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -66,6 +67,34 @@ func (jc *JobCreate) SetExp(i int8) *JobCreate {
 // SetArea sets the "area" field.
 func (jc *JobCreate) SetArea(s string) *JobCreate {
 	jc.mutation.SetArea(s)
+	return jc
+}
+
+// SetCreateTime sets the "create_time" field.
+func (jc *JobCreate) SetCreateTime(t time.Time) *JobCreate {
+	jc.mutation.SetCreateTime(t)
+	return jc
+}
+
+// SetNillableCreateTime sets the "create_time" field if the given value is not nil.
+func (jc *JobCreate) SetNillableCreateTime(t *time.Time) *JobCreate {
+	if t != nil {
+		jc.SetCreateTime(*t)
+	}
+	return jc
+}
+
+// SetUpdateTime sets the "update_time" field.
+func (jc *JobCreate) SetUpdateTime(t time.Time) *JobCreate {
+	jc.mutation.SetUpdateTime(t)
+	return jc
+}
+
+// SetNillableUpdateTime sets the "update_time" field if the given value is not nil.
+func (jc *JobCreate) SetNillableUpdateTime(t *time.Time) *JobCreate {
+	if t != nil {
+		jc.SetUpdateTime(*t)
+	}
 	return jc
 }
 
@@ -150,6 +179,14 @@ func (jc *JobCreate) defaults() {
 		v := job.DefaultIsExist
 		jc.mutation.SetIsExist(v)
 	}
+	if _, ok := jc.mutation.CreateTime(); !ok {
+		v := job.DefaultCreateTime
+		jc.mutation.SetCreateTime(v)
+	}
+	if _, ok := jc.mutation.UpdateTime(); !ok {
+		v := job.DefaultUpdateTime()
+		jc.mutation.SetUpdateTime(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -199,6 +236,12 @@ func (jc *JobCreate) check() error {
 		if err := job.AreaValidator(v); err != nil {
 			return &ValidationError{Name: "area", err: fmt.Errorf(`ent: validator failed for field "Job.area": %w`, err)}
 		}
+	}
+	if _, ok := jc.mutation.CreateTime(); !ok {
+		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "Job.create_time"`)}
+	}
+	if _, ok := jc.mutation.UpdateTime(); !ok {
+		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "Job.update_time"`)}
 	}
 	return nil
 }
@@ -282,6 +325,22 @@ func (jc *JobCreate) createSpec() (*Job, *sqlgraph.CreateSpec) {
 			Column: job.FieldArea,
 		})
 		_node.Area = value
+	}
+	if value, ok := jc.mutation.CreateTime(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: job.FieldCreateTime,
+		})
+		_node.CreateTime = value
+	}
+	if value, ok := jc.mutation.UpdateTime(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: job.FieldUpdateTime,
+		})
+		_node.UpdateTime = value
 	}
 	return _node, _spec
 }

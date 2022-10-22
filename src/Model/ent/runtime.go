@@ -55,6 +55,16 @@ func init() {
 	jobDescArea := jobFields[6].Descriptor()
 	// job.AreaValidator is a validator for the "area" field. It is called by the builders before save.
 	job.AreaValidator = jobDescArea.Validators[0].(func(string) error)
+	// jobDescCreateTime is the schema descriptor for create_time field.
+	jobDescCreateTime := jobFields[7].Descriptor()
+	// job.DefaultCreateTime holds the default value on creation for the create_time field.
+	job.DefaultCreateTime = jobDescCreateTime.Default.(time.Time)
+	// jobDescUpdateTime is the schema descriptor for update_time field.
+	jobDescUpdateTime := jobFields[8].Descriptor()
+	// job.DefaultUpdateTime holds the default value on creation for the update_time field.
+	job.DefaultUpdateTime = jobDescUpdateTime.Default.(func() time.Time)
+	// job.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
+	job.UpdateDefaultUpdateTime = jobDescUpdateTime.UpdateDefault.(func() time.Time)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescRole is the schema descriptor for role field.

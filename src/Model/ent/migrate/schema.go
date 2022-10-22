@@ -18,6 +18,8 @@ var (
 		{Name: "is_remote", Type: field.TypeBool},
 		{Name: "exp", Type: field.TypeInt8},
 		{Name: "area", Type: field.TypeString},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
 	}
 	// JobsTable holds the schema information for the "jobs" table.
 	JobsTable = &schema.Table{

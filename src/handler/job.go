@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent"
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
 	"github.com/HaleNing/Ning_JobBoard/src/database"
 	"github.com/HaleNing/Ning_JobBoard/src/param"
@@ -18,6 +19,7 @@ func JobApi(api fiber.Router, ctx context.Context) {
 	jobCtx = ctx
 	api.Post("/job/create", createNewJobHandler)
 	api.Get("/job/getByCompany", getJobsByCompanyNameHandler)
+	api.Get("job/allList", getAllJobList)
 	api.Get("/job/doBusy", busyHandler)
 
 }
@@ -53,13 +55,10 @@ func createNewJobHandler(ctx *fiber.Ctx) error {
 }
 
 func getJobsByCompanyNameHandler(ctx *fiber.Ctx) error {
-	if !utils.CheckLogin(ctx) {
-		return fiber.NewError(fiber.StatusBadRequest, "you need login")
-	}
 	bn := ctx.Query("company")
 	log.Println(jobCtx)
 	log.Println(bn)
-	allJobs, err := database.DBConn.Job.Query().Where(job.IsExist(true)).Where(job.CompanyNameEQ(bn)).All(context.Background())
+	allJobs, err := database.DBConn.Job.Query().Where(job.IsExist(true)).Where(job.CompanyNameEQ(bn)).Order(ent.Desc("create_time")).All(context.Background())
 	if err != nil {
 		log.Printf("getJobsByCompanyNameHandler err:[%v]", err)
 		return fiber.NewError(fiber.StatusBadRequest, "get job msg error!")
@@ -67,6 +66,16 @@ func getJobsByCompanyNameHandler(ctx *fiber.Ctx) error {
 	log.Println(allJobs)
 	res, err := json.Marshal(allJobs)
 	log.Println(res)
+	return ctx.Send(res)
+}
+
+func getAllJobList(ctx *fiber.Ctx) error {
+	all, err := database.DBConn.Job.Query().Where(job.IsExist(true)).Limit(100).Order(ent.Desc("create_time")).All(context.Background())
+	if err != nil {
+		log.Printf("getAllJobList have a error :[%v]", err)
+	}
+	successRes := param.CreateSuccessRes(all)
+	res, _ := json.Marshal(successRes)
 	return ctx.Send(res)
 }
 

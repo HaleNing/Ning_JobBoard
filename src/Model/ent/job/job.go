@@ -2,6 +2,10 @@
 
 package job
 
+import (
+	"time"
+)
+
 const (
 	// Label holds the string label denoting the job type in the database.
 	Label = "job"
@@ -21,6 +25,10 @@ const (
 	FieldExp = "exp"
 	// FieldArea holds the string denoting the area field in the database.
 	FieldArea = "area"
+	// FieldCreateTime holds the string denoting the create_time field in the database.
+	FieldCreateTime = "create_time"
+	// FieldUpdateTime holds the string denoting the update_time field in the database.
+	FieldUpdateTime = "update_time"
 	// Table holds the table name of the job in the database.
 	Table = "jobs"
 )
@@ -35,6 +43,8 @@ var Columns = []string{
 	FieldIsRemote,
 	FieldExp,
 	FieldArea,
+	FieldCreateTime,
+	FieldUpdateTime,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -60,4 +70,10 @@ var (
 	ExpValidator func(int8) error
 	// AreaValidator is a validator for the "area" field. It is called by the builders before save.
 	AreaValidator func(string) error
+	// DefaultCreateTime holds the default value on creation for the "create_time" field.
+	DefaultCreateTime time.Time
+	// DefaultUpdateTime holds the default value on creation for the "update_time" field.
+	DefaultUpdateTime func() time.Time
+	// UpdateDefaultUpdateTime holds the default value on update for the "update_time" field.
+	UpdateDefaultUpdateTime func() time.Time
 )
