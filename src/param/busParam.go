@@ -1,7 +1,7 @@
 package param
 
 type JobCreateParam struct {
-	CompanyName string `json:"company_name"`
+	CompanyName string `json:"company_name" `
 	JobExp      int8   `json:"job_exp"`
 	JobDesc     string `json:"job_desc"`
 	JobName     string `json:"job_name"`

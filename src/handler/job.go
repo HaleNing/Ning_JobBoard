@@ -48,7 +48,7 @@ func createNewJobHandler(ctx *fiber.Ctx) error {
 		log.Printf("err:[%v]", err)
 		return fiber.NewError(fiber.StatusBadRequest, "create new job error!")
 	} else {
-		return ctx.SendString("create new job  success")
+		return ctx.JSON("create new job  success")
 	}
 }
 
@@ -82,7 +82,7 @@ func busyHandler(ctx *fiber.Ctx) error {
 			return fiber.NewError(fiber.StatusBadRequest, "do busy error!")
 		case result := <-busyChannel:
 			log.Printf("channel Received: %s\n", result)
-			return ctx.SendString(result)
+			return ctx.JSON(result)
 		default:
 		}
 	}

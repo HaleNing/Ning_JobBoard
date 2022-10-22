@@ -14,7 +14,7 @@ import (
 // world start
 func main() {
 	app := fiber.New()
-	err := godotenv.Load("config.env")
+	err := godotenv.Load("src/config.env")
 	if err != nil {
 		log.Fatalf("failed to read env file :[%v]", err)
 	}
