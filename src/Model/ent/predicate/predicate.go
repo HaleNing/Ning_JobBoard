@@ -14,3 +14,6 @@ type User func(*sql.Selector)
 
 // User_info is the predicate function for user_info builders.
 type User_info func(*sql.Selector)
+
+// User_job is the predicate function for user_job builders.
+type User_job func(*sql.Selector)

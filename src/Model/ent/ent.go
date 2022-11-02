@@ -13,6 +13,7 @@ import (
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user"
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user_info"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user_job"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -36,6 +37,7 @@ func columnChecker(table string) func(string) error {
 		job.Table:       job.ValidColumn,
 		user.Table:      user.ValidColumn,
 		user_info.Table: user_info.ValidColumn,
+		user_job.Table:  user_job.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

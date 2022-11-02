@@ -56,11 +56,26 @@ var (
 		Columns:    UserInfosColumns,
 		PrimaryKey: []*schema.Column{UserInfosColumns[0]},
 	}
+	// UserJobsColumns holds the columns for the "user_jobs" table.
+	UserJobsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "job_id", Type: field.TypeInt64},
+		{Name: "user_id", Type: field.TypeInt64},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
+	}
+	// UserJobsTable holds the schema information for the "user_jobs" table.
+	UserJobsTable = &schema.Table{
+		Name:       "user_jobs",
+		Columns:    UserJobsColumns,
+		PrimaryKey: []*schema.Column{UserJobsColumns[0]},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		JobsTable,
 		UsersTable,
 		UserInfosTable,
+		UserJobsTable,
 	}
 )
 

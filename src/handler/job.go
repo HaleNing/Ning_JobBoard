@@ -7,9 +7,11 @@ import (
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
 	"github.com/HaleNing/Ning_JobBoard/src/database"
 	"github.com/HaleNing/Ning_JobBoard/src/param"
+	"github.com/HaleNing/Ning_JobBoard/src/service"
 	"github.com/HaleNing/Ning_JobBoard/src/utils"
 	"github.com/gofiber/fiber/v2"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -22,7 +24,39 @@ func JobApi(api fiber.Router, ctx context.Context) {
 	api.Get("job/allList", getAllJobList)
 	api.Get("/job/doBusy", busyHandler)
 	api.Get("/job/getList", getListByLimitHandler)
+	api.Get("/job/del", delJobByIdHandler)
+	api.Post("/job/update", upJobByIdHandler)
 
+}
+
+func upJobByIdHandler(ctx *fiber.Ctx) error {
+	if !utils.CheckLogin(ctx) {
+		return fiber.NewError(fiber.StatusBadRequest, "you need login")
+	}
+	upJob := new(param.JobUpParam)
+	if err := ctx.BodyParser(upJob); err != nil {
+		log.Println(err)
+		return fiber.NewError(fiber.StatusBadRequest, "job update param is nil")
+	}
+	log.Println(upJob) // john
+	err := service.UpJob(upJob)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "job update failure ")
+	}
+	return ctx.JSON("update job  success")
+}
+
+func delJobByIdHandler(ctx *fiber.Ctx) error {
+	if !utils.CheckLogin(ctx) {
+		return fiber.NewError(fiber.StatusBadRequest, "you need login")
+	}
+	id := ctx.Query("id")
+	delId, _ := strconv.Atoi(id)
+	err := service.DelJobById(delId)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "del have error")
+	}
+	return ctx.SendString("ok")
 }
 
 func getListByLimitHandler(ctx *fiber.Ctx) error {
@@ -30,31 +64,13 @@ func getListByLimitHandler(ctx *fiber.Ctx) error {
 	parseErr := ctx.QueryParser(p)
 	if parseErr != nil {
 		log.Printf("parseErr: %v", parseErr)
-		return fiber.NewError(fiber.StatusBadRequest, "query job list fail,please contact administer")
+		return fiber.NewError(fiber.StatusBadRequest, "query job list fail,please contact administrator")
 	}
-
-	log.Printf("getListByLimit p: area:[%v]-jobName:[%v]-remote:[%v]-tech:[%v]", p.Name, p.Name, p.IsRemote, p.Tech)
-	allJobsForLimit, err := database.DBConn.Job.Query().Where(job.IsExist(true)).
-		Where(job.JobNameContainsFold(p.Name)).
-		Where(job.CompanyNameContainsFold(p.Tech)).
-		Where(job.IsRemote(p.IsRemote > 0)).
-		Order(ent.Desc("create_time")).All(context.Background())
-	jobs := make([]*ent.Job, 0, len(allJobsForLimit))
-	for _, element := range allJobsForLimit {
-		if len(p.Area) == 0 {
-			jobs = append(jobs, element)
-		} else if len(p.Area) > 0 && element.Area == p.Area {
-			jobs = append(jobs, element)
-		}
-	}
+	jobs, err := service.GetJobListByCondition(p.Name, p.Tech, p.IsRemote > 0, p.Area)
 	if err != nil {
-		log.Printf("getListByLimit err:[%v]", err)
-		return fiber.NewError(fiber.StatusBadRequest, "query job list fail,please contact administer")
+		return fiber.NewError(fiber.StatusBadRequest, "query job list inside fail,please contact administrator")
 	}
-	log.Println(jobs)
-	res, _ := json.Marshal(jobs)
-	log.Println(res)
-	return ctx.Send(res)
+	return ctx.Send(jobs)
 }
 
 func createNewJobHandler(ctx *fiber.Ctx) error {

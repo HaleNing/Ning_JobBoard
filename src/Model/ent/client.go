@@ -13,6 +13,7 @@ import (
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user"
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user_info"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user_job"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -29,6 +30,8 @@ type Client struct {
 	User *UserClient
 	// User_info is the client for interacting with the User_info builders.
 	User_info *User_infoClient
+	// User_job is the client for interacting with the User_job builders.
+	User_job *User_jobClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -45,6 +48,7 @@ func (c *Client) init() {
 	c.Job = NewJobClient(c.config)
 	c.User = NewUserClient(c.config)
 	c.User_info = NewUser_infoClient(c.config)
+	c.User_job = NewUser_jobClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -81,6 +85,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Job:       NewJobClient(cfg),
 		User:      NewUserClient(cfg),
 		User_info: NewUser_infoClient(cfg),
+		User_job:  NewUser_jobClient(cfg),
 	}, nil
 }
 
@@ -103,6 +108,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Job:       NewJobClient(cfg),
 		User:      NewUserClient(cfg),
 		User_info: NewUser_infoClient(cfg),
+		User_job:  NewUser_jobClient(cfg),
 	}, nil
 }
 
@@ -134,6 +140,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Job.Use(hooks...)
 	c.User.Use(hooks...)
 	c.User_info.Use(hooks...)
+	c.User_job.Use(hooks...)
 }
 
 // JobClient is a client for the Job schema.
@@ -404,4 +411,94 @@ func (c *User_infoClient) GetX(ctx context.Context, id int) *User_info {
 // Hooks returns the client hooks.
 func (c *User_infoClient) Hooks() []Hook {
 	return c.hooks.User_info
+}
+
+// User_jobClient is a client for the User_job schema.
+type User_jobClient struct {
+	config
+}
+
+// NewUser_jobClient returns a client for the User_job from the given config.
+func NewUser_jobClient(c config) *User_jobClient {
+	return &User_jobClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `user_job.Hooks(f(g(h())))`.
+func (c *User_jobClient) Use(hooks ...Hook) {
+	c.hooks.User_job = append(c.hooks.User_job, hooks...)
+}
+
+// Create returns a builder for creating a User_job entity.
+func (c *User_jobClient) Create() *UserJobCreate {
+	mutation := newUserJobMutation(c.config, OpCreate)
+	return &UserJobCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of User_job entities.
+func (c *User_jobClient) CreateBulk(builders ...*UserJobCreate) *UserJobCreateBulk {
+	return &UserJobCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for User_job.
+func (c *User_jobClient) Update() *UserJobUpdate {
+	mutation := newUserJobMutation(c.config, OpUpdate)
+	return &UserJobUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *User_jobClient) UpdateOne(uj *User_job) *UserJobUpdateOne {
+	mutation := newUserJobMutation(c.config, OpUpdateOne, withUser_job(uj))
+	return &UserJobUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *User_jobClient) UpdateOneID(id int) *UserJobUpdateOne {
+	mutation := newUserJobMutation(c.config, OpUpdateOne, withUser_jobID(id))
+	return &UserJobUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for User_job.
+func (c *User_jobClient) Delete() *UserJobDelete {
+	mutation := newUserJobMutation(c.config, OpDelete)
+	return &UserJobDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *User_jobClient) DeleteOne(uj *User_job) *UserJobDeleteOne {
+	return c.DeleteOneID(uj.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *User_jobClient) DeleteOneID(id int) *UserJobDeleteOne {
+	builder := c.Delete().Where(user_job.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &UserJobDeleteOne{builder}
+}
+
+// Query returns a query builder for User_job.
+func (c *User_jobClient) Query() *UserJobQuery {
+	return &UserJobQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a User_job entity by its id.
+func (c *User_jobClient) Get(ctx context.Context, id int) (*User_job, error) {
+	return c.Query().Where(user_job.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *User_jobClient) GetX(ctx context.Context, id int) *User_job {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *User_jobClient) Hooks() []Hook {
+	return c.hooks.User_job
 }

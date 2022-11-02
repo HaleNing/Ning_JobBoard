@@ -9,6 +9,7 @@ import (
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/schema"
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user"
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user_info"
+	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/user_job"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -117,4 +118,24 @@ func init() {
 	user_infoDescPasswdHash := user_infoFields[2].Descriptor()
 	// user_info.PasswdHashValidator is a validator for the "passwd_hash" field. It is called by the builders before save.
 	user_info.PasswdHashValidator = user_infoDescPasswdHash.Validators[0].(func(string) error)
+	user_jobFields := schema.User_job{}.Fields()
+	_ = user_jobFields
+	// user_jobDescJobID is the schema descriptor for job_id field.
+	user_jobDescJobID := user_jobFields[0].Descriptor()
+	// user_job.JobIDValidator is a validator for the "job_id" field. It is called by the builders before save.
+	user_job.JobIDValidator = user_jobDescJobID.Validators[0].(func(int64) error)
+	// user_jobDescUserID is the schema descriptor for user_id field.
+	user_jobDescUserID := user_jobFields[1].Descriptor()
+	// user_job.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
+	user_job.UserIDValidator = user_jobDescUserID.Validators[0].(func(int64) error)
+	// user_jobDescCreateTime is the schema descriptor for create_time field.
+	user_jobDescCreateTime := user_jobFields[2].Descriptor()
+	// user_job.DefaultCreateTime holds the default value on creation for the create_time field.
+	user_job.DefaultCreateTime = user_jobDescCreateTime.Default.(time.Time)
+	// user_jobDescUpdateTime is the schema descriptor for update_time field.
+	user_jobDescUpdateTime := user_jobFields[3].Descriptor()
+	// user_job.DefaultUpdateTime holds the default value on creation for the update_time field.
+	user_job.DefaultUpdateTime = user_jobDescUpdateTime.Default.(func() time.Time)
+	// user_job.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
+	user_job.UpdateDefaultUpdateTime = user_jobDescUpdateTime.UpdateDefault.(func() time.Time)
 }

@@ -27,6 +27,7 @@ type hooks struct {
 	Job       []ent.Hook
 	User      []ent.Hook
 	User_info []ent.Hook
+	User_job  []ent.Hook
 }
 
 // Options applies the options on the config object.
