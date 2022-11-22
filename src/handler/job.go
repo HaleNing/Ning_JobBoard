@@ -6,8 +6,8 @@ import (
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent"
 	"github.com/HaleNing/Ning_JobBoard/src/Model/ent/job"
 	"github.com/HaleNing/Ning_JobBoard/src/database"
+	"github.com/HaleNing/Ning_JobBoard/src/delegate"
 	"github.com/HaleNing/Ning_JobBoard/src/param"
-	"github.com/HaleNing/Ning_JobBoard/src/service"
 	"github.com/HaleNing/Ning_JobBoard/src/utils"
 	"github.com/gofiber/fiber/v2"
 	"log"
@@ -22,10 +22,10 @@ func JobApi(api fiber.Router, ctx context.Context) {
 	api.Post("/job/create", createNewJobHandler)
 	api.Get("/job/getByCompany", getJobsByCompanyNameHandler)
 	api.Get("job/allList", getAllJobList)
-	api.Get("/job/doBusy", busyHandler)
 	api.Get("/job/getList", getListByLimitHandler)
 	api.Get("/job/del", delJobByIdHandler)
 	api.Post("/job/update", upJobByIdHandler)
+	api.Get("/job/doBusy", busyHandler)
 
 }
 
@@ -39,7 +39,7 @@ func upJobByIdHandler(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "job update param is nil")
 	}
 	log.Println(upJob) // john
-	err := service.UpJob(upJob)
+	err := delegate.UpJob(upJob)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "job update failure ")
 	}
@@ -52,7 +52,7 @@ func delJobByIdHandler(ctx *fiber.Ctx) error {
 	}
 	id := ctx.Query("id")
 	delId, _ := strconv.Atoi(id)
-	err := service.DelJobById(delId)
+	err := delegate.DelJobById(delId)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "del have error")
 	}
@@ -66,7 +66,7 @@ func getListByLimitHandler(ctx *fiber.Ctx) error {
 		log.Printf("parseErr: %v", parseErr)
 		return fiber.NewError(fiber.StatusBadRequest, "query job list fail,please contact administrator")
 	}
-	jobs, err := service.GetJobListByCondition(p.Name, p.Tech, p.IsRemote > 0, p.Area)
+	jobs, err := delegate.GetJobListByCondition(p.Name, p.Tech, p.IsRemote > 0, p.Area)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "query job list inside fail,please contact administrator")
 	}
