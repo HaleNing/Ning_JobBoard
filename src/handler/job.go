@@ -21,7 +21,7 @@ func JobApi(api fiber.Router, ctx context.Context) {
 	jobCtx = ctx
 	api.Post("/job/create", createNewJobHandler)
 	api.Get("/job/getByCompany", getJobsByCompanyNameHandler)
-	api.Get("job/allList", getAllJobList)
+	api.Get("/job/allList", getAllJobList)
 	api.Get("/job/getList", getListByLimitHandler)
 	api.Get("/job/del", delJobByIdHandler)
 	api.Post("/job/update", upJobByIdHandler)
