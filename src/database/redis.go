@@ -17,7 +17,7 @@ func NewRedisConnection() *redis.Client {
 	//		MinVersion: tls.VersionTLS12},
 	//})
 	rdb := redis.NewClient(&redis.Options{
-		Addr: "red-cd02k1kgqg4ftbmk9obg:6379",
+		Addr: "redis://red-cgju5fu4dad69r7718cg:6379",
 	})
 
 	RDB = rdb
