@@ -8,6 +8,7 @@
 > users can Search for new Job on it.
 >
 > So, inspire by 'Xing'. I named this project as 'Ning'.
+> THX for Render free plan ,you can deploy little project with free.
 
 ## Capturing Requirements 🤔
 
