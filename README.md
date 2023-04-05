@@ -1,4 +1,4 @@
-# Ning_JobBoard 😎
+# Ning_JobBoard [Backend deploy on Render free plan, and still working on FrontEnd] 😎
 
 > why this name?
 > you may be curious,'Ning' in my personal name, in Germany, 'Xing' is a famous website for user find a new
