@@ -28,6 +28,7 @@
 - PGSQL
 - Golang
 - React
+- Next.js
 - Framework:
   - web: [fiber](https://github.com/gofiber/fiber)
   - orm: [ent](https://github.com/ent/ent)
