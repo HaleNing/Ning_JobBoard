@@ -7,6 +7,7 @@ import (
 	"github.com/HaleNing/Ning_JobBoard/src/handler"
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"log"
@@ -15,6 +16,7 @@ import (
 // world start
 func main() {
 	app := fiber.New()
+	app.Use(cors.New(cors.ConfigDefault))
 	err := godotenv.Load("config.env")
 	if err != nil {
 		log.Fatalf("failed to read env file :[%v]", err)

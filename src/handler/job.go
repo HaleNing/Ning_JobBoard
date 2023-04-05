@@ -124,8 +124,8 @@ func getAllJobList(ctx *fiber.Ctx) error {
 		log.Printf("getAllJobList have a error :[%v]", err)
 	}
 	successRes := param.CreateSuccessRes(all)
-	res, _ := json.Marshal(successRes)
-	return ctx.Send(res)
+	//res, _ := json.Marshal(successRes)
+	return ctx.JSON(successRes)
 }
 
 func busyHandler(ctx *fiber.Ctx) error {
